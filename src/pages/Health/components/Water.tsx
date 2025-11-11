@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { FaTint } from "react-icons/fa";
+import { FaTint, FaEdit } from "react-icons/fa";
 
 function Water() {
   const [water, setWater] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [waterInput, setWaterInput] = useState(2);
 
-  const percentual = `${(water / 3) * 100}%`;
+  const percentual = `${(water / waterInput) * 100}%`;
 
   function Water250() {
     setWater(water + 0.25);
@@ -13,15 +15,31 @@ function Water() {
   function Water500() {
     setWater(water + 0.5);
   }
+
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
   return (
-    <div
-      className="card shadow-sm p-3 p-md-4"
-      style={{ borderRadius: "12px", border: "1px solid #e0e0e0" }}
-    >
-      <div className="d-flex flex-column gap-2 gap-md-3">
-        <h2 className="h5 h4-md fw-bold text-dark mb-0" style={{ fontSize: 'clamp(1.1rem, 3vw, 1.25rem)' }}>
-          Hidratação
-        </h2>
+    <>
+      <div
+        className="card shadow-sm p-3 p-md-4 position-relative"
+        style={{ borderRadius: "12px", border: "1px solid #e0e0e0" }}
+      >
+        <button
+          onClick={handleOpenModal}
+          className="btn btn-link position-absolute top-0 end-0 p-2"
+          style={{ 
+            color: "#6c757d", 
+            textDecoration: "none",
+            zIndex: 1
+          }}
+        >
+          <FaEdit style={{ fontSize: "1.2rem" }} />
+        </button>
+        <div className="d-flex flex-column gap-2 gap-md-3">
+          <h2 className="h5 h4-md fw-bold text-dark mb-0" style={{ fontSize: 'clamp(1.1rem, 3vw, 1.25rem)' }}>
+            Hidratação
+          </h2>
         <div className="d-flex align-items-center gap-2">
           <FaTint style={{ color: "#007bff", fontSize: "clamp(1.2rem, 3vw, 1.5rem)" }} />
           <div className="d-flex align-items-baseline">
@@ -32,14 +50,15 @@ function Water() {
               {water.toFixed(2)}
             </span>
             <span className="text-muted" style={{ fontSize: "clamp(1rem, 2.5vw, 1.2rem)" }}>
-              /3L
+              /{waterInput}L
             </span>
           </div>
         </div>
         <p className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
-          {water >= 3
+          {waterInput<=water
             ? "Parabéns você conseguiu bater a sua meta!!"
             : "Você vai conseguir!!"}
+            
         </p>
         <div
           className="progress"
@@ -59,7 +78,7 @@ function Water() {
             }}
             aria-valuenow={water}
             aria-valuemin={0}
-            aria-valuemax={3}
+            aria-valuemax={waterInput}
           ></div>
         </div>
         <div className="d-flex gap-2">
@@ -92,6 +111,55 @@ function Water() {
         </div>
       </div>
     </div>
+
+    {/* Modal */}
+    <div
+      className={`modal fade ${showModal ? "show" : ""}`}
+      style={{ display: showModal ? "block" : "none" }}
+      tabIndex={-1}
+      role="dialog"
+    >
+      <div className="modal-dialog modal-dialog-centered" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Editar Hidratação</h5>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={handleCloseModal}
+              aria-label="Close"
+            ></button>
+          </div>
+          <div className="modal-body">
+            <label htmlFor="water">Quantidade de água em litros</label>
+            <input type="number" className="form-control" value={waterInput} onChange={(e) => setWaterInput(Number(e.target.value))} />
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleCloseModal}
+            >
+              Fechar
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleCloseModal}
+            >
+              Salvar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {showModal && (
+      <div
+        className="modal-backdrop fade show"
+        onClick={handleCloseModal}
+      ></div>
+    )}
+  </>
   );
 }
 
