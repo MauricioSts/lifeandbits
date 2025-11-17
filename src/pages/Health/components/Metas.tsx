@@ -40,7 +40,6 @@ function Metas({ treinos }: GymProps) {
               Treinos:
             </p>
 
-            {/* Apenas um span aqui */}
             <span
               className="fw-bold"
               style={{
@@ -98,6 +97,7 @@ function Metas({ treinos }: GymProps) {
               <label htmlFor="gym">Quantidade de treinos</label>
               <input
                 type="number"
+                id="gym"
                 className="form-control"
                 onChange={(e) => setMeta(Number(e.target.value))}
               />
@@ -133,3 +133,4 @@ function Metas({ treinos }: GymProps) {
 }
 
 export default Metas;
+
