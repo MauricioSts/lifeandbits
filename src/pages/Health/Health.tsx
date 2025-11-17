@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Gym from "./components/Gym";
 import Metas from "./components/Metas";
 import Water from "./components/Water";
 
 function Heath() {
-  const [treinos, setTreinos] = useState(0);
+  const [treinos, setTreinos] = useState(() => {
+    const treinosSalvos = localStorage.getItem("treinoSemanal");
+    return treinosSalvos ? JSON.parse(treinosSalvos) : "";
+  });
+  useEffect(() => {
+    localStorage.setItem("treinoSemanal", JSON.stringify(treinos));
+  }, [treinos]);
+
   return (
     <div
       className="min-vh-100 p-3 p-md-4 p-lg-5"

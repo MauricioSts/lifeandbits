@@ -1,18 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import type { GymProps } from "../../../types/Health/GymProps";
 
 function Gym({ treinos, setTreinos }: GymProps) {
   const [showModal, setShowModal] = useState(false);
-  const [treinosInput, setTreinosInput] = useState(5);
+  const [treinosInput, setTreinosInput] = useState(() => {
+    const metaTreinos = localStorage.getItem("metaTreino");
+    return metaTreinos ? JSON.parse(metaTreinos) : "";
+  });
 
-  const percentual = `${(treinos / treinosInput) * 100}%`;
+  useEffect(() => {
+    localStorage.setItem("metaTreino", JSON.stringify(treinosInput));
+  }, [treinosInput]);
+
+  const percentual =
+    treinosInput > 0 ? `${(treinos / treinosInput) * 100}%` : "0%";
 
   function addTreino() {
-    if (treinos < treinosInput) {
-      setTreinos?.(treinos + 1);
+    if (treinos < treinosInput - 1) {
+      setTreinos?.(Number(treinos + 1));
+      alert("continue");
     } else {
-      alert("Parabens voce completou todos os treinos");
+      setTreinos?.(Number(treinos + 1));
+      alert("vc conseguiu");
     }
   }
 
