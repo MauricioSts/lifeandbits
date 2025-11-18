@@ -6,7 +6,7 @@ function Gym({ treinos, setTreinos }: GymProps) {
   const [showModal, setShowModal] = useState(false);
   const [treinosInput, setTreinosInput] = useState(() => {
     const metaTreinos = localStorage.getItem("metaTreino");
-    return metaTreinos ? JSON.parse(metaTreinos) : "";
+    return metaTreinos ? JSON.parse(metaTreinos) : "0";
   });
 
   useEffect(() => {
@@ -17,15 +17,24 @@ function Gym({ treinos, setTreinos }: GymProps) {
     treinosInput > 0 ? `${(treinos / treinosInput) * 100}%` : "0%";
 
   function addTreino() {
-    if (treinos < treinosInput - 1) {
-      setTreinos?.(Number(treinos + 1));
-      alert("continue");
+    const proximoTreino = Number(treinos + 1);
+
+    if (treinosInput <= 0) {
+      alert("Por favor, defina uma meta de treinos antes de marcar.");
+      return;
+    }
+
+    if (proximoTreino <= treinosInput) {
+      setTreinos?.(proximoTreino);
+
+      if (proximoTreino === treinosInput) {
+        alert("Parabéns! Você atingiu sua meta de treinos da semana!");
+      }
     } else {
-      setTreinos?.(Number(treinos + 1));
-      alert("vc conseguiu");
+      alert("Você já ultrapassou sua meta! O próximo treino será um extra.");
+      setTreinos?.(proximoTreino);
     }
   }
-
   const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 

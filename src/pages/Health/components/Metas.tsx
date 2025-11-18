@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import type { GymProps } from "../../../types/Health/GymProps";
 
 function Metas({ treinos }: GymProps) {
   const [showModal, setShowModal] = useState(false);
-  const [meta, setMeta] = useState(0);
+  const [meta, setMeta] = useState(() => {
+    const metaMensal = localStorage.getItem("metaMensal");
+    return metaMensal ? JSON.parse(metaMensal) : "0";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("metaMensal", JSON.stringify(meta));
+  }, [meta]);
 
   const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
@@ -32,7 +39,7 @@ function Metas({ treinos }: GymProps) {
             className="h5 h4-md fw-bold text-dark mb-0"
             style={{ fontSize: "clamp(1.1rem, 3vw, 1.25rem)" }}
           >
-            Metas da saúde:
+            Metas mensai:
           </h2>
 
           <div className="d-flex justify-content-between align-items-center flex-wrap gap-1">
@@ -94,7 +101,7 @@ function Metas({ treinos }: GymProps) {
               ></button>
             </div>
             <div className="modal-body">
-              <label htmlFor="gym">Quantidade de treinos</label>
+              <label htmlFor="gym">Quantidade de treinos mensais</label>
               <input
                 type="number"
                 id="gym"
@@ -133,4 +140,3 @@ function Metas({ treinos }: GymProps) {
 }
 
 export default Metas;
-

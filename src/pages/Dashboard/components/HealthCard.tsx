@@ -1,12 +1,40 @@
+import { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 
 function HealthCard() {
-  // Dados mockados
+  const DEFAULT_TREINOS_META = 20;
+  const DEFAULT_TREINOS_LABEL = "Treinos do mês";
+
+  const [treinosMeta, setTreinosMeta] = useState(DEFAULT_TREINOS_META);
+  const [treinosAtual, setTreinosAtual] = useState(0);
+
+  useEffect(() => {
+    const parseNumeroLocal = (valor: string | null) => {
+      if (!valor) return undefined;
+      const numero = Number(valor);
+      return Number.isFinite(numero) ? numero : undefined;
+    };
+
+    const metaMensal = parseNumeroLocal(localStorage.getItem("metaMensal"));
+    const treinosSalvos = parseNumeroLocal(localStorage.getItem("treinoSemanal"));
+
+    if (metaMensal !== undefined && metaMensal > 0) {
+      setTreinosMeta(metaMensal);
+    } else {
+      setTreinosMeta(DEFAULT_TREINOS_META);
+    }
+
+    if (treinosSalvos !== undefined && treinosSalvos >= 0) {
+      setTreinosAtual(treinosSalvos);
+    } else {
+      setTreinosAtual(0);
+    }
+  }, []);
+
   const healthData = {
     treinos: {
-      atual: 12,
-      meta: 20,
-      label: "Treinos do mês",
+      meta: treinosMeta,
+      label: DEFAULT_TREINOS_LABEL,
     },
     agua: {
       atual: 1.5,
@@ -14,10 +42,10 @@ function HealthCard() {
       label: "Água (litros)",
       unidade: "L",
     },
-
   };
 
   const calcularPercentual = (atual: number, meta: number) => {
+    if (meta <= 0) return 0;
     return Math.min((atual / meta) * 100, 100);
   };
 
@@ -43,7 +71,7 @@ function HealthCard() {
           <div className="d-flex justify-content-between align-items-center mb-2">
             <span className="small text-muted">{healthData.treinos.label}</span>
             <span className="small fw-semibold" style={{ color: "#28a745" }}>
-              {healthData.treinos.atual} / {healthData.treinos.meta}
+              {treinosAtual} / {healthData.treinos.meta}
             </span>
           </div>
           <div
@@ -58,14 +86,11 @@ function HealthCard() {
               className="progress-bar"
               role="progressbar"
               style={{
-                width: `${calcularPercentual(
-                  healthData.treinos.atual,
-                  healthData.treinos.meta
-                )}%`,
+                width: `${calcularPercentual(treinosAtual, healthData.treinos.meta)}%`,
                 backgroundColor: "#28a745",
                 borderRadius: "10px",
               }}
-              aria-valuenow={healthData.treinos.atual}
+              aria-valuenow={treinosAtual}
               aria-valuemin={0}
               aria-valuemax={healthData.treinos.meta}
             ></div>
@@ -73,10 +98,7 @@ function HealthCard() {
           <div className="d-flex justify-content-end mt-1">
             <span className="small text-muted">
               {Math.round(
-                calcularPercentual(
-                  healthData.treinos.atual,
-                  healthData.treinos.meta
-                )
+                calcularPercentual(treinosAtual, healthData.treinos.meta)
               )}
               %
             </span>
@@ -88,7 +110,8 @@ function HealthCard() {
           <div className="d-flex justify-content-between align-items-center mb-2">
             <span className="small text-muted">{healthData.agua.label}</span>
             <span className="small fw-semibold" style={{ color: "#28a745" }}>
-              {healthData.agua.atual} / {healthData.agua.meta} {healthData.agua.unidade}
+              {healthData.agua.atual} / {healthData.agua.meta}{" "}
+              {healthData.agua.unidade}
             </span>
           </div>
           <div
@@ -118,20 +141,15 @@ function HealthCard() {
           <div className="d-flex justify-content-end mt-1">
             <span className="small text-muted">
               {Math.round(
-                calcularPercentual(
-                  healthData.agua.atual,
-                  healthData.agua.meta
-                )
+                calcularPercentual(healthData.agua.atual, healthData.agua.meta)
               )}
               %
             </span>
           </div>
         </div>
-
       </div>
     </div>
   );
 }
 
 export default HealthCard;
-
